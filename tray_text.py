@@ -14,11 +14,11 @@ from gi.repository import AppIndicator3 as appIndicator
 
 PING_FREQUENCY_IN_SECONDS = 2
 
-class NotesIndicatorLabel:
+class TasksIndicatorLabel:
 
     def __init__(self):
         self.indicator = appIndicator.Indicator.new(
-            "indicator-notes", "indicator-notes", appIndicator.IndicatorCategory.OTHER)
+            "indicator-tasks", "indicator-tasks", appIndicator.IndicatorCategory.OTHER)
         self.indicator.set_status(appIndicator.IndicatorStatus.ACTIVE)
         self.menu_setup()
         self.indicator.set_menu(self.menu)
@@ -46,5 +46,5 @@ class NotesIndicatorLabel:
         return True
 
 if __name__ == "__main__":
-    indicator = NotesIndicatorLabel()
+    indicator = TasksIndicatorLabel()
     indicator.main()

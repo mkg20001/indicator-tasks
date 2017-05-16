@@ -1,14 +1,14 @@
 {
-  "name": "indicator-notes",
+  "name": "indicator-tasks",
   "version": "0.0.1",
-  "description": "Display your notes in your tray, edit them as a text file. Dead simple",
+  "description": "Display your tasks in your tray, edit them as a text file. Dead simple",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "notes",
+    "tasks",
     "tray",
     "electron",
     "reminder"
@@ -18,5 +18,14 @@
   "dependencies": {
     "electron": "^1.6.6",
     "json-file": "^0.1.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkg20001/indicator-tasks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mkg20001/indicator-tasks/issues"
+  },
+  "homepage": "https://github.com/mkg20001/indicator-tasks#readme"
 }
