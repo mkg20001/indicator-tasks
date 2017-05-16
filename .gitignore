@@ -1,0 +1,8 @@
+tasks.txt
+tasks.json
+*.deb
+node_modules
+npm-debug.log
+label.txt
+#searching for an icon
+ico.png

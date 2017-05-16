@@ -1,0 +1,22 @@
+{
+  "name": "indicator-notes",
+  "version": "0.0.1",
+  "description": "Display your notes in your tray, edit them as a text file. Dead simple",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "notes",
+    "tray",
+    "electron",
+    "reminder"
+  ],
+  "author": "Maciej Krüger <mkg20001@gmail.com>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "electron": "^1.6.6",
+    "json-file": "^0.1.0"
+  }
+}
