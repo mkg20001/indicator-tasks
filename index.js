@@ -18,7 +18,7 @@ const parser = require('./tasks_parser')
 const cp = require('child_process')
 const labelTask = cp.spawn('python2', [path.join(__dirname, 'tray_text.py')], {stdio: 'inherit'})
 labelTask.once('close', (ex, sig) => {
-  console.error('[ERROR] Tray icon start failed with ' + (ex || sig))
+  console.error('[ERROR] Tray icon start failed with ' + (ex || sig)) // eslint-disable-line no-console
 })
 
 let appIcon = null
@@ -86,8 +86,6 @@ app.on('ready', () => {
     })
 
     let tasks = co.map(c_ => c[c_]).reduce((a, b) => a.concat(b), [])
-
-    // console.log(c)
 
     const tasksToDo = db.get().filter(n => n.active()).filter(n => !n.longterm).filter(n => !n.state()).length
 

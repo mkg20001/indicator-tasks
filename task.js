@@ -86,7 +86,6 @@ const types = {
 }
 
 function Task (data, db) {
-  // console.log(data, db)
   const id = data.id
 
   if (!db.get(id)) db.set(id, {}) // init

@@ -2,7 +2,7 @@
 
 const jf = require('json-file')
 
-const Task = require(__dirname + '/task')
+const Task = require('./task')
 
 function TaskDB (file) {
   const db = jf.read(file)
@@ -16,7 +16,6 @@ function TaskDB (file) {
 
   function tasks (_nt) {
     nt_ = {}
-    // console.log(_nt)
     nt = _nt.map(n => new Task(n, db))
     let g = {}
     nt.map(n => (nt_[n.id] = n && (g[n.groupId] = {

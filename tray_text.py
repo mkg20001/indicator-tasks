@@ -1,4 +1,3 @@
-
 #! /bin/sh
 """:"
 exec python $0 ${1+"$@"}
