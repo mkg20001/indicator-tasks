@@ -1,4 +1,4 @@
-"use strict"
+'use strict'
 
 const {
   app,
@@ -6,55 +6,58 @@ const {
   Tray
 } = require('electron')
 
-const n = __dirname + "/tasks"
+const fs = require('fs')
+const path = require('path')
 
-const fs = require("fs")
+const n = path.join(__dirname, 'tasks')
 
-const TaskDB = require(__dirname + "/taskdb")
-const parser = require(__dirname + "/tasks_parser")
+const TaskDB = require('./taskdb')
+const parser = require('./tasks_parser')
 
-//Linux tray fix
-const cp = require("child_process")
-const labelTask = cp.spawn("python2", [__dirname + "/tray_text.py"])
+// Linux tray fix
+const cp = require('child_process')
+const labelTask = cp.spawn('python2', [path.join(__dirname, 'tray_text.py')])
 
 let appIcon = null
 app.on('ready', () => {
-  appIcon = new Tray(__dirname + '/ico.png')
-  if (!fs.existsSync(n + ".json")) fs.writeFileSync(n + ".json", new Buffer("{}"))
-  const db = new TaskDB(n + ".json")
-  db.tasks(parser(n + ".txt"))
+  appIcon = new Tray(path.join(__dirname, 'ico.png'))
+  if (!fs.existsSync(n + '.json')) {
+    fs.writeFileSync(n + '.json', Buffer.from('{}'))
+  }
+  const db = new TaskDB(n + '.json')
+  db.tasks(parser(n + '.txt'))
 
   const trayTop = [{
-    label: "Update Tasks",
+    label: 'Update Tasks',
     click: () => {
-      db.tasks(parser(n + ".txt"))
+      db.tasks(parser(n + '.txt'))
       rebuild()
     }
-  }].map(e => !(e.position || (e.position = "endof=top")) || e)
+  }].map(e => !(e.position || (e.position = 'endof=top')) || e)
   const trayBottom = [{
-    label: "Quit",
+    label: 'Quit',
     click: onExit
-  }].map(e => !(e.position || (e.position = "endof=bottom")) || e)
+  }].map(e => !(e.position || (e.position = 'endof=bottom')) || e)
 
-  function rebuild() {
+  function rebuild () {
     let c = {}
     let co = []
 
     db.getG().map(g => {
       c[g.id] = [{
         label: g.g,
-        position: "endof=" + g.id
+        position: 'endof=' + g.id
       }]
       co.push(g.id)
     })
 
     db.get().filter(n => n.active()).map(task => c[task.groupId].push({
       label: task.render(),
-      type: "checkbox",
+      type: 'checkbox',
       checked: task.state(),
       enabled: true,
       task,
-      position: "endof=" + task.groupId,
+      position: 'endof=' + task.groupId,
       click: () => {
         if (task.state()) task.untick()
         else task.tick()
@@ -65,32 +68,35 @@ app.on('ready', () => {
 
     db.get().filter(n => !n.active()).map(task => c[task.groupId].push({
       label: task.render(),
-      type: "checkbox",
+      type: 'checkbox',
       checked: task.state(),
       enabled: false,
       task,
-      position: "endof=" + task.groupId
+      position: 'endof=' + task.groupId
     }))
 
     co.map(c_ => {
       let n = c[c_].slice(0)
       n.shift()
       n = n.filter(n => n.task.active()).filter(n => !n.task.state()).filter(n => !n.task.longterm)
-      if (n.length) c[c_][0].label += " (" + n.length + ")"
+      if (n.length) c[c_][0].label += ' (' + n.length + ')'
     })
 
     let tasks = co.map(c_ => c[c_]).reduce((a, b) => a.concat(b), [])
 
-    //console.log(c)
+    // console.log(c)
 
     const tasksToDo = db.get().filter(n => n.active()).filter(n => !n.longterm).filter(n => !n.state()).length
 
     let label
-    if (tasksToDo) label = tasksToDo + " thing" + (tasksToDo != 1 ? "s" : "") + " to do"
-    else label = ""
+    if (tasksToDo) {
+      label = tasksToDo + ' thing' + (tasksToDo !== 1 ? 's' : '') + ' to do'
+    } else {
+      label = ''
+    }
     appIcon.setTitle(label)
     appIcon.setToolTip(label)
-    fs.writeFileSync(__dirname + "/label.txt", new Buffer(label))
+    fs.writeFileSync(path.join(__dirname, 'label.txt'), Buffer.from(label))
 
     appIcon.setContextMenu(Menu.buildFromTemplate((label ? [{
       label
@@ -99,9 +105,9 @@ app.on('ready', () => {
   rebuild()
   setInterval(rebuild, 10 * 1000)
 
-  function onExit() {
+  function onExit () {
     db.save()
-    labelTask.kill("SIGKILL")
+    labelTask.kill('SIGKILL')
     process.exit(0)
   }
 
