@@ -16,7 +16,10 @@ const parser = require('./tasks_parser')
 
 // Linux tray fix
 const cp = require('child_process')
-const labelTask = cp.spawn('python2', [path.join(__dirname, 'tray_text.py')])
+const labelTask = cp.spawn('python2', [path.join(__dirname, 'tray_text.py')], {stdio: 'inherit'})
+labelTask.once('close', (ex, sig) => {
+  console.error('[ERROR] Tray icon start failed with ' + (ex || sig))
+})
 
 let appIcon = null
 app.on('ready', () => {
@@ -107,6 +110,7 @@ app.on('ready', () => {
 
   function onExit () {
     db.save()
+    labelTask.removeAllListeners('close')
     labelTask.kill('SIGKILL')
     process.exit(0)
   }

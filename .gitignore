@@ -4,5 +4,4 @@ tasks.json
 node_modules
 npm-debug.log
 label.txt
-#searching for an icon
-ico.png
+package-lock.json
