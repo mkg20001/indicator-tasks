@@ -7,20 +7,35 @@ import sys
 import urllib
 import json
 import gi
-from gi.repository import Gtk, GLib
 gi.require_version('Gtk', '3.0')
-from gi.repository import AppIndicator3 as appIndicator
+from gi.repository import Gtk, GLib
 
 PING_FREQUENCY_IN_SECONDS = 2
+APPIND_SUPPORT = 1
 
 class TasksIndicatorLabel:
 
     def __init__(self):
-        self.indicator = appIndicator.Indicator.new(
-            "indicator-tasks", "indicator-tasks", appIndicator.IndicatorCategory.OTHER)
-        self.indicator.set_status(appIndicator.IndicatorStatus.ACTIVE)
+        global APPIND_SUPPORT
+        try:
+            from gi.repository import AppIndicator3 as appIndicator
+        except:
+            APPIND_SUPPORT = 0
+
         self.menu_setup()
-        self.indicator.set_menu(self.menu)
+
+        if APPIND_SUPPORT == 1:
+            self.indicator = appIndicator.Indicator.new(
+                "indicator-tasks", "indicator-tasks", appIndicator.IndicatorCategory.OTHER)
+            self.indicator.set_status(appIndicator.IndicatorStatus.ACTIVE)
+            self.indicator.set_menu(self.menu)
+        else:
+            self.indicator = Gtk.StatusIcon()
+            self.indicator.set_from_file('ico.png')
+            self.indicator.connect('popup-menu', self.onPopupMenu)
+
+    def onPopupMenu(self, icon, button, time):
+        self.menu.popup(None, None, Gtk.StatusIcon.position_menu, icon, button, time)
 
     def menu_setup(self):
         self.menu = Gtk.Menu()
@@ -38,9 +53,14 @@ class TasksIndicatorLabel:
         sys.exit(0)
 
     def update_label(self):
+        global APPIND_SUPPORT
+
         f = open("label.txt","r")
         label=f.read()
-        self.indicator.set_label(label,label)
+        if APPIND_SUPPORT == 1:
+            self.indicator.set_label(label,label)
+        else:
+            self.indicator.set_title(label)
         f.close()
         return True
 
